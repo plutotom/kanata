@@ -1,0 +1,67 @@
+;; defsrc is still necessary
+(defcfg
+  process-unmapped-keys yes
+)
+;; Config for 12" MacBook with physical f keys. This config allows for brightness etc to still work.
+(defsrc
+  esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret 
+  caps           a    s    d    f    g       h    j    k    l    ;       '    \ 
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  fn lctl           lalt lmet          spc            rmet ralt
+) 
+
+;; d and k are meh
+;; f and j are control
+;; s and l are shirt
+;; a annd ; are alt
+
+
+(defalias escctrl (tap-hold 100 100 esc lctl)
+  a (tap-hold $tap-time $hold-time a lalt)
+  s (tap-hold $tap-time $hold-time s lshft)
+  d (tap-hold $tap-time $hold-time d lmet)
+  f (tap-hold $tap-time $hold-time f rctl)
+
+  
+  j (tap-hold $tap-time $hold-time j rctl)
+  k (tap-hold $tap-time $hold-time k rmet)
+  l (tap-hold $tap-time $hold-time l rsft)
+  ; (tap-hold $tap-time $hold-time ; ralt)
+  fn (tap-hold 200 200 fn (layer-toggle fn))
+)
+
+
+(deflayer base
+  esc   brdn  brup  _     _     _     _     prev  pp    next  mute  vold  volu
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret
+  esc            @a   @s   @d   @f   g       h    @j   @k   @l   @;      '    \
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  @fn lctl           lalt lmet          spc            rmet ralt
+)
+
+
+
+(defvar
+  tap-time 150
+  hold-time 200
+)
+
+
+;; (deflayer base
+;;   brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
+;;   @escctrl @a @k @d @f @j @k @l @;
+;;   @fnl
+;; )
+
+(deflayer fn
+  lrld  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret
+  esc            @a   @s   @d   @f   g       h    @j   @k   @l   @;      '    \
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  @fn lctl           lalt lmet          spc            rmet ralt
+)
+
