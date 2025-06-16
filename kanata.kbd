@@ -1,7 +1,18 @@
 ;; defsrc is still necessary
 (defcfg
   process-unmapped-keys yes
+  danger-enable-cmd yes
+  sequence-timeout 1000
 )
+
+(defvar
+  tap-time 150
+  hold-time 200
+  
+  ;; tap-time 200
+  ;; hold-time 250 
+)
+
 ;; Config for 12" MacBook with physical f keys. This config allows for brightness etc to still work.
 (defsrc
   esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
@@ -19,6 +30,15 @@
 
 
 (defalias escctrl (tap-hold 100 100 esc lctl)
+
+
+  rmet (tap-hold 200 200 rmet (layer-while-held raycast))
+  ;; You can use bash -c and then a quoted string to execute arbitrary text in
+  ;; bash. All text within double-quotes is treated as a single string.
+  cm1 (cmd open "raycast://extensions/raycast/raycast-notes/raycast-notes")
+  cm2 (cmd open -a "Arc" "https://google.com")
+  cm3 (cmd open "/System/Volumes/Data/Applications/Notion.app")
+
   a (tap-hold $tap-time $hold-time a lalt)
   s (tap-hold $tap-time $hold-time s lshft)
   d (tap-hold $tap-time $hold-time d lmet)
@@ -29,9 +49,7 @@
   k (tap-hold $tap-time $hold-time k rmet)
   l (tap-hold $tap-time $hold-time l rsft)
   ; (tap-hold $tap-time $hold-time ; ralt)
-  fn (tap-hold 200 200 fn (layer-toggle fn))
 )
-
 
 (deflayer base
   esc   brdn  brup  _     _     _     _     prev  pp    next  mute  vold  volu
@@ -39,22 +57,26 @@
   tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret
   esc            @a   @s   @d   @f   g       h    @j   @k   @l   @;      '    \
   lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
-  @fn lctl           lalt lmet          spc            rmet ralt
+  @fn lctl           lalt lmet          spc            @rmet ralt
 )
 
 
 
-(defvar
-  tap-time 150
-  hold-time 200
+
+
+(deflayer raycast
+  esc   brdn  brup  f3    f4    f5    f6   prev  pp  next  mute  vold  volu
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret 
+  esc           a    s    d    f    g       h    j    k    l    ;       '    \ 
+  lsft   `       z    x    c    v    @cm3       @cm1    @cm2    ,    .    /       rsft
+  @fn lctl           lalt lmet          spc            @rmet ralt
+) 
+
+
+(defalias
+  fn (tap-hold 200 200 fn (layer-toggle fn))
 )
-
-
-;; (deflayer base
-;;   brdn  brup  _    _    _    _   prev  pp  next  mute  vold  volu
-;;   @escctrl @a @k @d @f @j @k @l @;
-;;   @fnl
-;; )
 
 (deflayer fn
   lrld  f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12

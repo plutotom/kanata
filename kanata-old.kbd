@@ -1,0 +1,160 @@
+(defcfg
+  danger-enable-cmd yes
+  process-unmapped-keys yes
+  sequence-timeout 1000 ;; default is 1000
+)
+(defvar
+      tap-time 200
+      hold-time 250 
+)
+;; Defined the keymap for the default layer
+(defsrc
+  esc   f1    f2   f3   f4   f5  f6    f7   f8   f9   f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret 
+  caps           a    s    d    f    g       h    j    k    l    ;       '    \ 
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  fn lctl           lalt lmet          spc            rmet ralt
+) 
+
+;; This creates a default layer that is active by default, to it takes the physical layout above and maps it to this virtual layout below
+;; lrld is the live reload key, so when I push it it restarts the keyboard and reloads the keymap
+(deflayer default 
+  lrld   brdown   brup   mctl   lpad   bldn   blup   prev   pp   next   mute   vold   volu
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret 
+  esc            @a   @s   @d   @f   g       h    @j   @k   @l   @;      '    \ 
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  @fn @vimnav           lalt lmet          spc            @rmet ralt
+) 
+
+(defalias
+  rmet (tap-hold 200 200 rmet (layer-while-held raycast))
+  ;; You can use bash -c and then a quoted string to execute arbitrary text in
+  ;; bash. All text within double-quotes is treated as a single string.
+  cm1 (cmd open "raycast://extensions/raycast/raycast-notes/raycast-notes")
+  cm2 (cmd open -a "Arc" "https://google.com")
+  cm3 (cmd open "/System/Volumes/Data/Applications/Notion.app")
+  cm4 S-1
+
+  ;; You can prefix commands with sudo -u USER
+  ;; to execute commands as a different user.
+  ;; cm3 (cmd sudo -u proctoi bash -c "echo goodbye")
+  
+  esc (tap-hold-press $tap-time $hold-time esc caps)
+  grv (tap-hold-press $tap-time $hold-time S-grv grv)
+  capsword (caps-word 2000)
+  ;; cap (tap-hold-press $tap-time $hold-time @capsword (layer-toggle cap-mod))
+  a (tap-hold $tap-time $hold-time a lmet)
+  s (tap-hold $tap-time $hold-time s lalt)
+  d (tap-hold $tap-time $hold-time d lsft)
+  f (tap-hold $tap-time $hold-time f lctl)
+  j (tap-hold $tap-time $hold-time j rctl)
+  k (tap-hold $tap-time $hold-time k rsft)
+  l (tap-hold $tap-time $hold-time l lalt)
+  scln (tap-hold $tap-time $hold-time scln lmet)
+)   
+
+
+;; 1. Virtual key and sequence
+(defvirtualkeys
+  run-cm3 (cmd open "/System/Volumes/Data/Applications/Notion.app")
+)
+(defseq run-cm3 (o n))
+
+;; 2. Alias for sequence leader
+(defalias
+  sldr sldr
+)
+
+(defalias
+  ;; 1 tap : "A" key
+  ;; 2 taps: Control+C
+  ;; 3 taps: Switch to another layer
+  ;; 4 taps: Escape key
+  td (tap-dance 200 (a C-c (layer-switch raycast) esc))
+)
+
+(deflayer raycast
+  esc   brdn  brup  f3    f4    f5    f6   prev  pp  next  mute  vold  volu
+  IntlBackslash  @cm4    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    @sldr    o    p       [    ]    ret 
+  esc           @td    s    d    f    g       h    j    k    l    ;       '    \ 
+  lsft   `       z    x    c    v    @cm3       @cm1    @cm2    ,    .    /       rsft
+  @fn lctl           lalt lmet          spc            @rmet ralt
+) 
+
+
+;; (shell "open \"raycast://extensions/raycast/raycast-notes/raycast-notes\"")
+;; (deflayer blank
+;;   _    _    _    _    _    _    _    _    _    _    _    _    
+;;   _    _    _    _    _    _    _    _    _    _    _    _    _ _ _
+;;   _            _    _    _    _    _       _    _    _    _    _       _    _    _ 
+;;   _           _    _    _    _    _       _    _    _    _    _       _    _    
+;;   _   _       _    _    _    _    _       _    _    _    _    _       _
+;;   _ _           _ _          _            _ _
+;; )
+
+
+
+
+
+
+
+
+;; (deflayer default
+;;   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+;;   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+;;   esc  a   s    d    f    g    h    j    k    l    ;    '    ret
+;;   lsft z    x    c    v    b    n    m    ,    .    /    rsft
+;;   @vimnav lmet lalt           spc            ralt rmet rctl
+;; )
+
+;; (deflayer vimnav
+;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _
+;;   _  _    _    _    _    _    _    _    _    _    _    _    _    _
+;;   _    _    _    _    _    _    lft down  up  rght   _   _    _
+;;   _    _    _    _    _    _    _    _    _    _    _    _
+;;   _    _    _           _            _    _    _
+;; )
+
+;; (defalias
+;;     hybrctl (tap-hold-press 200 200 lctl lctl)
+;;     vimnav  (tap-hold-press 500 500 lctl (layer-toggle vimnav))
+;; )
+
+;; (defalias
+;;   hybrctl (tap-hold-layer 200 200 lctl vimnav)
+;; )
+
+
+
+
+(deflayer vimnav
+  _    _    _    _    _    _    _    _    _    _    _    _    
+  _    _    _    _    _    _    _    _    _    _    _    _    _ _ _
+  _            _    _    _    _    _       _    _    _    _    _       _    _    _ 
+  _           _    _    _    _    _       left    down    up    right    _       _    _    
+  _   _       _    _    _    _    _       _    _    _    _    _       _
+  fn lctl           _ _          _            _ _
+)
+
+(defalias
+    vimnav (tap-hold-press 200 200 lctl (multi lctl (layer-while-held vimnav)))
+)
+
+
+;; Handles the function layer toggling
+(defalias
+  fn (tap-hold 200 200 fn (layer-toggle fn))
+)
+
+;; Some keys are missing: `Mission Control`, `Launchpad`, `dictation`, ` Do Not Disturb`
+(deflayer fn
+  esc   f1    f2   f3   f4   f5  f6    f7   f8   f9   f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret 
+  esc           a    s    d    f    g       h    j    k    l    ;       '    \ 
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  fn lctl           lalt lmet          spc            rmet ralt
+)
